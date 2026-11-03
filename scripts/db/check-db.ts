@@ -1,4 +1,4 @@
-import { rawDb } from '../lib/db/client-core';
+import { rawDb } from '../../lib/db/client-core';
 
 try {
   const quickCheck = rawDb.prepare('PRAGMA quick_check').get() as { quick_check?: string };

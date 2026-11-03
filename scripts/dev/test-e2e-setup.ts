@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-import { e2eAdminEmail, e2eAdminPassword, e2eAdminUsername } from '../tests/e2e/credentials';
+import { e2eAdminEmail, e2eAdminPassword, e2eAdminUsername } from '../../tests/e2e/credentials';
 
 process.env.APP_ENV = 'test';
 process.env.SITE_URL = 'http://127.0.0.1:3100';
@@ -12,11 +12,11 @@ for (const suffix of ['', '-wal', '-shm']) {
   fs.rmSync(`data/test.db${suffix}`, { force: true });
 }
 
-const { db, rawDb } = await import('../lib/db/client-core');
+const { db, rawDb } = await import('../../lib/db/client-core');
 const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
 migrate(db, { migrationsFolder: 'drizzle' });
 
-const { auth } = await import('../lib/auth/auth-core');
+const { auth } = await import('../../lib/auth/auth-core');
 await auth.api.signUpEmail({
   body: {
     email: e2eAdminEmail,

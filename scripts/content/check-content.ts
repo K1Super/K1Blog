@@ -1,4 +1,4 @@
-import { getAllPosts, getAllTags } from '../features/content/loader';
+import { getAllPosts, getAllTags } from '../../features/content/loader';
 
 try {
   const posts = getAllPosts();

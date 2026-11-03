@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { getAllPosts } from '../features/content/loader';
+import { getAllPosts } from '../../features/content/loader';
 
 const docs = getAllPosts().map((post) => ({
   id: post.slug,

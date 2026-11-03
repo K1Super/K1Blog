@@ -1,8 +1,8 @@
 node_modules/
 .next/
-out/
-build/
-dist/
+/out/
+/build/
+/dist/
 data/*
 !data/.gitkeep
 public/search-index.json
@@ -16,6 +16,7 @@ coverage/
 playwright-report/
 test-results/
 .lighthouseci/
+.screenshots/
 blob-report/
 .DS_Store
 *.tsbuildinfo

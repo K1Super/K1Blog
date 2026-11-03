@@ -125,9 +125,8 @@ content/posts/      MDX 文章
 styles/             设计 token、字体、站点与页面样式
 public/fonts/       展示字体子集、等宽字体
 drizzle/            SQL 迁移
-scripts/            构建、迁移、备份、清理、OG、字体、E2E 准备
+scripts/            按职能分目录：build / content / db / dev / fonts / runtime
 tests/              unit / integration / e2e
-docs/               执行标准（00–06 + ADR）
 deploy/             Nginx 配置与证书目录
 ```
 

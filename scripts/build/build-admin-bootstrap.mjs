@@ -9,7 +9,7 @@ const outfile = path.join(root, 'dist', 'bootstrap-admin.mjs');
 fs.mkdirSync(path.dirname(outfile), { recursive: true });
 
 await build({
-  entryPoints: [path.join(root, 'scripts', 'bootstrap-admin.ts')],
+  entryPoints: [path.join(root, 'scripts', 'db', 'bootstrap-admin.ts')],
   outfile,
   bundle: true,
   platform: 'node',

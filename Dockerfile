@@ -52,10 +52,10 @@ RUN groupadd --system --gid 1001 k1 \
   && chown -R k1:k1 /app
 
 COPY --from=builder --chown=k1:k1 /app/.next/standalone ./
-COPY --from=builder --chown=k1:k1 /app/scripts/entrypoint.mjs ./scripts/entrypoint.mjs
-COPY --from=builder --chown=k1:k1 /app/dist/bootstrap-admin.mjs ./scripts/bootstrap-admin.mjs
-COPY --from=builder --chown=k1:k1 /app/scripts/backup-db.mjs ./scripts/backup-db.mjs
-COPY --from=builder --chown=k1:k1 /app/scripts/purge-comments.mjs ./scripts/purge-comments.mjs
+COPY --from=builder --chown=k1:k1 /app/scripts/runtime/entrypoint.mjs ./scripts/runtime/entrypoint.mjs
+COPY --from=builder --chown=k1:k1 /app/dist/bootstrap-admin.mjs ./scripts/db/bootstrap-admin.mjs
+COPY --from=builder --chown=k1:k1 /app/scripts/db/backup-db.mjs ./scripts/db/backup-db.mjs
+COPY --from=builder --chown=k1:k1 /app/scripts/db/purge-comments.mjs ./scripts/db/purge-comments.mjs
 
 USER k1
 EXPOSE 3000
@@ -63,4 +63,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD ["node", "-e", "fetch('http://127.0.0.1:3000/api/v1/health/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 
-ENTRYPOINT ["node", "scripts/entrypoint.mjs"]
+ENTRYPOINT ["node", "scripts/runtime/entrypoint.mjs"]

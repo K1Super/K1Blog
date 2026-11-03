@@ -1,7 +1,7 @@
-import { env } from '../lib/env';
-import { auth } from '../lib/auth/auth-core';
-import { meetsPasswordPolicy, PASSWORD_POLICY_MESSAGE } from '../lib/auth/password-policy';
-import { rawDb } from '../lib/db/client-core';
+import { env } from '../../lib/env';
+import { auth } from '../../lib/auth/auth-core';
+import { meetsPasswordPolicy, PASSWORD_POLICY_MESSAGE } from '../../lib/auth/password-policy';
+import { rawDb } from '../../lib/db/client-core';
 
 type ExistingUser = { id: string; username: string | null };
 

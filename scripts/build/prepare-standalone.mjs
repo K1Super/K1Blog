@@ -16,23 +16,23 @@ copy(path.join(root, 'public'), path.join(standalone, 'public'));
 copy(path.join(root, 'content'), path.join(standalone, 'content'));
 copy(path.join(root, 'drizzle'), path.join(standalone, 'drizzle'));
 copy(
-  path.join(root, 'scripts', 'entrypoint.mjs'),
-  path.join(standalone, 'scripts', 'entrypoint.mjs'),
+  path.join(root, 'scripts', 'runtime', 'entrypoint.mjs'),
+  path.join(standalone, 'scripts', 'runtime', 'entrypoint.mjs'),
 );
 
 copy(
-  path.join(root, 'scripts', 'backup-db.mjs'),
-  path.join(standalone, 'scripts', 'backup-db.mjs'),
+  path.join(root, 'scripts', 'db', 'backup-db.mjs'),
+  path.join(standalone, 'scripts', 'db', 'backup-db.mjs'),
 );
 
 copy(
-  path.join(root, 'scripts', 'purge-comments.mjs'),
-  path.join(standalone, 'scripts', 'purge-comments.mjs'),
+  path.join(root, 'scripts', 'db', 'purge-comments.mjs'),
+  path.join(standalone, 'scripts', 'db', 'purge-comments.mjs'),
 );
 
 copy(
   path.join(root, 'dist', 'bootstrap-admin.mjs'),
-  path.join(standalone, 'scripts', 'bootstrap-admin.mjs'),
+  path.join(standalone, 'scripts', 'db', 'bootstrap-admin.mjs'),
 );
 
 const pnpmDir = path.join(root, 'node_modules', '.pnpm');
