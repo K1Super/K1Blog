@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+build/
+data/
+.env
+.env.local
+.env.*.local
+docs/
+design/
+test-results/
+playwright-report/
+coverage/
+.git/
+.screenshots/
+.trae-html-share-packages/
+*.log

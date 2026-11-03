@@ -1,0 +1,663 @@
+openapi: 3.1.0
+info:
+  title: K1Blog API
+  version: 1.1.0
+  description: |
+    K1Blog 公开评论、管理端自动审核与留言、认证与健康检查接口。
+    成功响应统一为 { data }，错误响应为 application/problem+json。
+servers:
+  - url: https://example.com/api/v1
+    description: 生产环境（替换为实际 SITE_URL）
+  - url: http://localhost:3000/api/v1
+    description: 本地开发
+tags:
+  - name: Health
+  - name: Comments
+  - name: Admin
+paths:
+  /health/live:
+    get:
+      tags: [Health]
+      summary: 进程存活检查
+      operationId: getLiveness
+      responses:
+        '200':
+          description: 进程存活
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /health/ready:
+    get:
+      tags: [Health]
+      summary: 数据库就绪检查
+      operationId: getReadiness
+      responses:
+        '200':
+          description: 数据库可用
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: 数据库不可用
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /posts/{slug}/comments:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+        example: precision-as-aesthetic
+    get:
+      tags: [Comments]
+      summary: 读取已通过的评论
+      operationId: listPublicComments
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+          description: 上一页返回的 nextCursor
+      responses:
+        '200':
+          description: 评论列表
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCommentsResponse'
+        '404':
+          $ref: '#/components/responses/ArticleNotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    post:
+      tags: [Comments]
+      summary: 提交评论（进入待审）
+      operationId: createComment
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 16
+            maxLength: 64
+        - name: Origin
+          in: header
+          required: true
+          schema:
+            type: string
+          description: 必须与服务端 SITE_URL 一致
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentInput'
+      responses:
+        '202':
+          description: 已接收，等待审核或被判定为垃圾
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommentResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/OriginRejected'
+        '404':
+          $ref: '#/components/responses/ArticleNotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableComment'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /admin/comments:
+    get:
+      tags: [Admin]
+      summary: 管理端评论列表
+      operationId: listAdminComments
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [all, pending, approved, rejected, spam]
+            default: all
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        '200':
+          description: 管理端评论分页
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /admin/comments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    patch:
+      tags: [Admin]
+      summary: 审核评论
+      operationId: moderateComment
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/CsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerationInput'
+      responses:
+        '200':
+          description: 审核完成
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfRejected'
+        '404':
+          $ref: '#/components/responses/CommentNotFound'
+        '409':
+          $ref: '#/components/responses/StateConflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Admin]
+      summary: 软删除评论
+      operationId: deleteComment
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/CsrfToken'
+      responses:
+        '204':
+          description: 已软删除
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfRejected'
+        '404':
+          $ref: '#/components/responses/CommentNotFound'
+  /admin/moderation/policy:
+    get:
+      tags: [Admin]
+      summary: 读取自动审核策略
+      operationId: getModerationPolicy
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: 当前策略修订快照
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationPolicyResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [Admin]
+      summary: 保存自动审核策略并复核存量待审
+      operationId: saveModerationPolicy
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/CsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerationPolicy'
+      responses:
+        '200':
+          description: 策略已保存，返回修订与复核计数
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationPolicyUpdateResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfRejected'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: better-auth.session_token
+      description: Better Auth 管理员会话 Cookie；实际名称可能因部署前缀而异
+  parameters:
+    CsrfToken:
+      name: x-csrf-token
+      in: header
+      required: true
+      schema:
+        type: string
+      description: 由管理端页面下发，HMAC 派生
+  responses:
+    BadRequest:
+      description: 请求格式错误
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: 未登录或会话失效
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    OriginRejected:
+      description: Origin 与 SITE_URL 不一致
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ArticleNotFound:
+      description: 文章不存在
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    CommentNotFound:
+      description: 评论不存在或已删除
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    CsrfRejected:
+      description: CSRF 校验失败
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableComment:
+      description: 评论字段非法、父评论非法或被安全策略拒绝
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ValidationError:
+      description: 参数校验失败
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    RateLimited:
+      description: 提交过于频繁
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    StateConflict:
+      description: 审核状态已被他人变更
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok, ready, unavailable]
+    Comment:
+      type: object
+      required: [id, parentId, authorName, content, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        parentId:
+          type: [string, 'null']
+          format: uuid
+        authorName:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CreateCommentInput:
+      type: object
+      required: [authorName, content, formStartedAt]
+      properties:
+        authorName:
+          type: string
+          minLength: 1
+          maxLength: 40
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        parentId:
+          type: string
+          format: uuid
+        website:
+          type: string
+          maxLength: 200
+          description: 蜜罐字段，正常用户留空
+        formStartedAt:
+          type: integer
+          minimum: 1
+          description: 表单开始时间毫秒时间戳
+    CreateCommentResult:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [id, status]
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              type: string
+              enum: [approved, pending]
+              description: 仅公开是否即时可见，不公开拦截分类
+    PublicCommentsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [items, nextCursor]
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+            nextCursor:
+              type: [string, 'null']
+    AdminComment:
+      allOf:
+        - $ref: '#/components/schemas/Comment'
+        - type: object
+          required: [postSlug, status]
+          properties:
+            postSlug:
+              type: string
+            status:
+              type: string
+              enum: [pending, approved, rejected, spam]
+            moderatedAt:
+              type: [string, 'null']
+              format: date-time
+            moderatedBy:
+              type: [string, 'null']
+            moderationNote:
+              type: [string, 'null']
+            automation:
+              oneOf:
+                - $ref: '#/components/schemas/CommentAutomation'
+                - type: 'null'
+    AdminCommentsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdminComment'
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            pageSize:
+              type: integer
+            total:
+              type: integer
+    ModerationInput:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected, spam]
+        note:
+          type: string
+          maxLength: 500
+    ModerationResult:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              type: string
+              enum: [pending, approved, rejected, spam]
+    ModerationReason:
+      type: object
+      required: [code, label, weight]
+      properties:
+        code:
+          type: string
+        label:
+          type: string
+        weight:
+          type: integer
+          minimum: 0
+          maximum: 100
+    CommentAutomation:
+      type: object
+      required: [action, score, reasons, policyRevision, evaluatedAt]
+      properties:
+        action:
+          type: string
+          enum: [approved, pending, rejected, spam]
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        reasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModerationReason'
+        policyRevision:
+          type: integer
+          minimum: 0
+        evaluatedAt:
+          type: string
+          format: date-time
+    ModerationPolicy:
+      type: object
+      required:
+        [
+          enabled,
+          autoApproveMaxRisk,
+          autoBlockMinRisk,
+          blockAction,
+          minSubmitSeconds,
+          maxSubmitAgeMinutes,
+          maxLinks,
+          duplicateWindowMinutes,
+          duplicateLimit,
+          ipWindowMinutes,
+          ipMaxComments,
+          bannedKeywords,
+          blockedNames,
+          sweepPendingOnSave,
+        ]
+      properties:
+        enabled:
+          type: boolean
+        autoApproveMaxRisk:
+          type: integer
+          minimum: 0
+          maximum: 99
+        autoBlockMinRisk:
+          type: integer
+          minimum: 1
+          maximum: 100
+        blockAction:
+          type: string
+          enum: [spam, rejected]
+        minSubmitSeconds:
+          type: integer
+          minimum: 0
+          maximum: 300
+        maxSubmitAgeMinutes:
+          type: integer
+          minimum: 1
+          maximum: 10080
+        maxLinks:
+          type: integer
+          minimum: 0
+          maximum: 10
+        duplicateWindowMinutes:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        duplicateLimit:
+          type: integer
+          minimum: 0
+          maximum: 20
+        ipWindowMinutes:
+          type: integer
+          minimum: 1
+          maximum: 1440
+        ipMaxComments:
+          type: integer
+          minimum: 1
+          maximum: 100
+        bannedKeywords:
+          type: array
+          maxItems: 1000
+          items:
+            type: string
+            minLength: 1
+            maxLength: 40
+        blockedNames:
+          type: array
+          maxItems: 1000
+          items:
+            type: string
+            minLength: 1
+            maxLength: 40
+        sweepPendingOnSave:
+          type: boolean
+    ModerationPolicySnapshot:
+      type: object
+      required: [policy, revision, updatedAt, updatedBy, source]
+      properties:
+        policy:
+          $ref: '#/components/schemas/ModerationPolicy'
+        revision:
+          type: integer
+          minimum: 0
+        updatedAt:
+          type: [string, 'null']
+          format: date-time
+        updatedBy:
+          type: [string, 'null']
+        source:
+          type: string
+          enum: [default, stored, fallback]
+    ModerationSweep:
+      type: object
+      required: [processed, approved, rejected, spam, pending, skipped]
+      properties:
+        processed:
+          type: integer
+        approved:
+          type: integer
+        rejected:
+          type: integer
+        spam:
+          type: integer
+        pending:
+          type: integer
+        skipped:
+          type: integer
+    ModerationPolicyResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ModerationPolicySnapshot'
+    ModerationPolicyUpdateResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [snapshot, sweep]
+          properties:
+            snapshot:
+              $ref: '#/components/schemas/ModerationPolicySnapshot'
+            sweep:
+              $ref: '#/components/schemas/ModerationSweep'
+    Problem:
+      type: object
+      required: [type, title, status, code, traceId]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        code:
+          type: string
+          description: 稳定错误码，如 K1-CMT-003
+        traceId:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string

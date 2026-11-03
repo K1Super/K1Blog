@@ -1,0 +1,9 @@
+packages: []
+
+# Next 把 sharp 列为可选依赖；站点已关闭运行时图片优化，忽略它可避免平台原生二进制进入安装树与产物
+ignoredOptionalDependencies:
+  - sharp
+
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

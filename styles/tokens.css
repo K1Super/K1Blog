@@ -1,0 +1,46 @@
+:root {
+  --bg: #0c0d0e;
+  --surface: #141517;
+  --surface-2: #1b1c1f;
+  --text: #e9e3d6;
+  --body-text: #cfc8ba;
+  --muted: #a9a397;
+  --faint: #8a857b;
+  --amber: #d49a45;
+  --oxide: #6c8792;
+  --rule: rgba(233, 227, 214, 0.14);
+  --rule-strong: rgba(233, 227, 214, 0.3);
+  --overlay: rgba(0, 0, 0, 0.68);
+  --danger: #c95c45;
+  --success: #86a07e;
+  --font-display: 'Newsreader', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-sans:
+    'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  --font-mono:
+    'IBM Plex Mono', 'SFMono-Regular', Consolas, 'PingFang SC', 'Microsoft YaHei UI',
+    'Microsoft YaHei', 'Noto Sans CJK SC', monospace;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --d1: 120ms;
+  --d2: 240ms;
+  --d3: 400ms;
+  --d4: 600ms;
+  --gutter: clamp(20px, 3.2vw, 48px);
+  --rail: 88px;
+}
+
+[data-theme='lamp'] {
+  --bg: #e9e3d6;
+  --surface: #e2dac9;
+  --surface-2: #dcd3c1;
+  --text: #16181a;
+  --body-text: #2b2a26;
+  --muted: #5f594f;
+  --faint: #6a6155;
+  --amber: #8f5a1a;
+  --oxide: #4f6b78;
+  --rule: rgba(22, 24, 26, 0.14);
+  --rule-strong: rgba(22, 24, 26, 0.3);
+  --overlay: rgba(22, 24, 26, 0.55);
+  --danger: #a84532;
+  --success: #56745a;
+}

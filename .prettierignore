@@ -1,0 +1,14 @@
+.next/
+node_modules/
+out/
+build/
+data/
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/
+pnpm-lock.yaml
+design/
+docs/
+public/fonts/
+styles/fonts.css

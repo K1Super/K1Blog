@@ -1,0 +1,293 @@
+.presence {
+  --presence-row: 24px;
+  width: clamp(286px, 23vw, 344px);
+  margin-left: auto;
+  padding-top: clamp(10px, 1.6vh, 14px);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.presence-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+.presence-title-en {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.presence-status {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.presence-status.is-live {
+  color: var(--amber);
+}
+
+.presence-status.is-live::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin-right: 5px;
+  background: var(--amber);
+  vertical-align: 1px;
+}
+
+.presence-body {
+  display: grid;
+  grid-template-columns: clamp(64px, 6vw, 76px) minmax(0, 1fr);
+  gap: clamp(12px, 1.6vw, 18px);
+  align-items: start;
+  margin-top: 12px;
+}
+
+.presence-state {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.presence-dial {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.presence-dial-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.presence-dial-rim {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1px;
+}
+
+.presence-dial-inner {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1px;
+}
+
+.presence-dial-tick {
+  stroke: var(--rule);
+  stroke-width: 1px;
+}
+
+.presence-dial-tick.is-major {
+  stroke: var(--rule-strong);
+}
+
+.presence-dial-needle {
+  transform-origin: 120px 120px;
+  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.presence-dial-cursor-line {
+  stroke: var(--amber);
+  stroke-width: 1px;
+}
+
+.presence-dial-cursor {
+  fill: var(--amber);
+}
+
+.presence-dial-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.presence-state-char {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text);
+  animation: presence-state-in var(--d2) var(--ease) both;
+}
+
+@keyframes presence-state-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.presence-state-meta {
+  display: flex;
+  align-items: baseline;
+  min-height: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+.presence-state-en {
+  color: var(--amber);
+}
+
+.presence-trace {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-rows: 14px minmax(0, 1fr);
+  min-width: 0;
+}
+
+.presence-trace-head {
+  position: relative;
+  grid-column: 2;
+  height: 14px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.presence-trace-head span {
+  position: absolute;
+  bottom: 3px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.presence-trace-head span:first-child {
+  left: 0;
+  transform: none;
+}
+
+.presence-trace-head span:nth-child(2) {
+  left: 50%;
+}
+
+.presence-trace-head span:last-child {
+  right: 2px;
+  left: auto;
+  color: var(--muted);
+  transform: none;
+}
+
+.presence-labels {
+  display: grid;
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-rows: repeat(3, var(--presence-row));
+  margin: 0;
+  padding: 0 4px 0 0;
+  list-style: none;
+}
+
+.presence-labels li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.presence-label-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+}
+
+.presence-label-cn {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.presence-plot {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  height: calc(var(--presence-row) * 3);
+  border-left: 1px solid var(--rule);
+}
+
+.presence-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 901px) {
+  .presence {
+    position: absolute;
+    right: var(--gutter);
+    top: 50%;
+    margin-left: 0;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .presence {
+    position: static;
+    width: min(100%, 344px);
+    margin: clamp(28px, 5vh, 46px) 0 0 auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .presence {
+    --presence-row: 22px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 26px;
+  }
+
+  .presence-body {
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .presence-state-char {
+    font-size: 20px;
+  }
+
+  .presence-trace {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .presence-title-en {
+    letter-spacing: 0.1em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presence-dial-needle {
+    transition: none;
+  }
+
+  .presence-state-char {
+    animation: none;
+  }
+}
