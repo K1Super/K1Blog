@@ -87,16 +87,13 @@ export function MagneticField() {
       if (!width || !height) return;
       ctx.clearRect(0, 0, width, height);
 
-      const baseSigma = Math.max(96, Math.min(156, width * 0.085));
+      const baseSigma = Math.max(60, Math.min(96, width * 0.052));
       const sigma = baseSigma * (1 + flow * 0.16);
-      const reach = sigma * 2.9;
+      const reach = sigma * 2.4;
       const reachSq = reach * reach;
       const [ar, ag, ab] = palette.accent;
       const [fr, fg, fb] = palette.faint;
       const magnetised = energy > 0.02;
-
-      ctx.lineCap = 'round';
-      ctx.lineWidth = 1;
 
       for (let row = 0; row < rows; row += 1) {
         const y = step / 2 + row * step;
@@ -118,28 +115,21 @@ export function MagneticField() {
           const seed = seeds[row * cols + col] ?? 0.5;
           const r = Math.max(1, Math.sqrt(dx * dx + dy * dy));
           const influence = Math.exp(-(r * r) / (2 * sigma * sigma)) * energy;
-          const twist = (0.78 + flow * 0.5) * Math.exp(-r / sigma) + (seed - 0.5) * 0.3;
-          const pull = influence * 9;
-          const swirl = influence * (5 + flow * 6);
+          const pull = influence * 11;
+          const swirl = influence * (7.5 + flow * 8);
           const ux = dx / r;
           const uy = dy / r;
           const cx = x + ux * pull - uy * swirl;
           const cy = y + uy * pull + ux * swirl;
-          const angle = Math.atan2(dy, dx) + Math.PI / 2 + twist;
-          const length = 2 + influence * 20 * (0.85 + seed * 0.3);
-          const half = length / 2;
-          const cos = Math.cos(angle);
-          const sin = Math.sin(angle);
 
           const tint = Math.min(1, influence * 1.7);
           const cr = Math.round(fr + (ar - fr) * tint);
           const cg = Math.round(fg + (ag - fg) * tint);
           const cb = Math.round(fb + (ab - fb) * tint);
-          ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${0.1 + influence * 0.5})`;
+          ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${0.1 + influence * 0.5})`;
           ctx.beginPath();
-          ctx.moveTo(cx - cos * half, cy - sin * half);
-          ctx.lineTo(cx + cos * half, cy + sin * half);
-          ctx.stroke();
+          ctx.arc(cx, cy, 1 + influence * 1.7 * (0.85 + seed * 0.3), 0, TAU);
+          ctx.fill();
         }
       }
     };

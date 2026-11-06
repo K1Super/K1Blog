@@ -274,9 +274,11 @@ button:disabled {
   margin: clamp(24px, 4vh, 40px) 0 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 17px;
+  font-weight: 500;
+  font-size: 18px;
   line-height: 1.5;
   color: var(--muted);
+  -webkit-font-smoothing: auto;
 }
 
 /* 展墙：四件作品以展签并列，不承担导航 */
@@ -705,8 +707,7 @@ button:disabled {
 
 .reveal {
   opacity: 0;
-  transform: translateY(6px);
-  animation: enter var(--d3) var(--ease) var(--delay, 0ms) both;
+  animation: page-fade var(--d3) var(--ease) var(--delay, 0ms) both;
 }
 
 .page-enter > article {

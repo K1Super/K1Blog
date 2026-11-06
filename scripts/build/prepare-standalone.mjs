@@ -53,16 +53,31 @@ try {
     '--ignore-scripts',
     '--prefer-offline',
   ];
-  const install = process.env.npm_execpath
-    ? childProcess.spawnSync(process.execPath, [process.env.npm_execpath, ...installArgs], {
+  // npm_execpath may be a JS launcher or the pnpm executable itself.
+  // Running an .exe through node fails with ERR_UNKNOWN_FILE_EXTENSION.
+  const launcher = process.env.npm_execpath;
+  let install;
+  if (launcher && /\.(c|m)?js$/i.test(launcher)) {
+    install = childProcess.spawnSync(process.execPath, [launcher, ...installArgs], {
+      cwd: stage,
+      stdio: 'inherit',
+    });
+  } else if (launcher && launcher.toLowerCase().endsWith('.exe')) {
+    install = childProcess.spawnSync(launcher, installArgs, {
+      cwd: stage,
+      stdio: 'inherit',
+    });
+  } else {
+    install = childProcess.spawnSync(
+      launcher ?? (process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'),
+      installArgs,
+      {
         cwd: stage,
         stdio: 'inherit',
-      })
-    : childProcess.spawnSync(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', installArgs, {
-        cwd: stage,
-        stdio: 'inherit',
-        shell: process.platform === 'win32',
-      });
+        shell: true,
+      },
+    );
+  }
 
   if (install.status !== 0) {
     throw new Error('runtime dependency staging failed');
