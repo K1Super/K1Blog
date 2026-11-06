@@ -1,4 +1,6 @@
+import childProcess from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -35,14 +37,56 @@ copy(
   path.join(standalone, 'scripts', 'db', 'bootstrap-admin.mjs'),
 );
 
-const pnpmDir = path.join(root, 'node_modules', '.pnpm');
-if (fs.existsSync(pnpmDir)) {
-  const drizzleEntry = fs.readdirSync(pnpmDir).find((entry) => entry.startsWith('drizzle-orm@'));
-  if (drizzleEntry) {
-    copy(
-      path.join(pnpmDir, drizzleEntry, 'node_modules', 'drizzle-orm'),
-      path.join(standalone, 'node_modules', 'drizzle-orm'),
-    );
+// 运行期依赖按锁文件重新装配成扁平生产树：Next 在非 Linux 构建机上追踪 pnpm 依赖时
+// 会漏掉部分运行期包与跨平台原生二进制，直接沿用追踪结果会让 Linux 目标机启动失败
+const stage = fs.mkdtempSync(path.join(os.tmpdir(), 'k1blog-runtime-'));
+try {
+  for (const file of ['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']) {
+    fs.copyFileSync(path.join(root, file), path.join(stage, file));
+  }
+
+  const installArgs = [
+    'install',
+    '--prod',
+    '--frozen-lockfile',
+    '--node-linker=hoisted',
+    '--ignore-scripts',
+    '--prefer-offline',
+  ];
+  const install = process.env.npm_execpath
+    ? childProcess.spawnSync(process.execPath, [process.env.npm_execpath, ...installArgs], {
+        cwd: stage,
+        stdio: 'inherit',
+      })
+    : childProcess.spawnSync(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', installArgs, {
+        cwd: stage,
+        stdio: 'inherit',
+        shell: process.platform === 'win32',
+      });
+
+  if (install.status !== 0) {
+    throw new Error('runtime dependency staging failed');
+  }
+
+  copy(path.join(stage, 'node_modules'), path.join(standalone, 'node_modules'));
+} finally {
+  fs.rmSync(stage, { recursive: true, force: true });
+}
+
+// Turbopack 外置副本在独立目录里是相对软链接，替换 node_modules 后会悬空，
+// 必须落成实体目录；better-sqlite3 的跨平台预编译二进制也随实体副本一并带上
+const externalModules = path.join(standalone, '.next', 'node_modules');
+if (fs.existsSync(externalModules)) {
+  for (const entry of fs.readdirSync(externalModules)) {
+    const target = path.join(externalModules, entry);
+    if (!fs.lstatSync(target).isSymbolicLink()) continue;
+    const base = entry.replace(/-[0-9a-f]{8,}$/, '');
+    const source = path.join(standalone, 'node_modules', base);
+    if (!fs.existsSync(source)) {
+      throw new Error(`runtime package missing for external bundle: ${entry}`);
+    }
+    fs.rmSync(target, { force: true });
+    copy(source, target);
   }
 }
 
