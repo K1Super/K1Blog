@@ -8,8 +8,7 @@ export function Masthead() {
   return (
     <header className="masthead">
       <Link className="brand" href="/">
-        K1
-        <span className="brand-mark" aria-hidden="true" />
+        K1Blog
       </Link>
       <SiteNav />
       <div className="mast-right">

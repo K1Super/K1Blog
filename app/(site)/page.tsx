@@ -1,12 +1,12 @@
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 
-import { SpotlightField } from '@/components/home/spotlight-field';
+import { MagneticField } from '@/components/home/magnetic-field';
 import { Specimen } from '@/components/work/specimen';
 import { getAllPosts } from '@/features/content';
 import { projects } from '@/lib/projects';
 import { site } from '@/lib/site';
-import { formatDate, padIndex, postHref, readingLabel } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 
 function delay(ms: number): CSSProperties {
   return { '--delay': `${ms}ms` } as CSSProperties;
@@ -14,113 +14,76 @@ function delay(ms: number): CSSProperties {
 
 export default function HomePage() {
   const posts = getAllPosts();
-  const current = posts[0];
-  const others = posts.slice(1);
-  const coverWork = projects[0];
-  const otherWorks = projects.slice(1);
+  const oldest = posts[posts.length - 1];
+  const firstPlate = projects[0];
 
   return (
     <div className="home-stage">
-      <SpotlightField />
+      <MagneticField />
 
       <section className="cover" aria-labelledby="home-title">
         <div className="cover-inner">
-          <p className="eyebrow reveal" style={delay(80)}>
-            写作与作品，自存于此
-          </p>
-          <h1 className="cover-title reveal" id="home-title" style={delay(160)}>
-            <span className="cover-title-line">把判断写下来</span>
-            <span className="cover-title-line cover-title-second">再反复校准</span>
-          </h1>
-          <div className="cover-foot reveal" style={delay(240)}>
-            <p className="cover-kicker">{site.kicker}</p>
-          </div>
-        </div>
-      </section>
-
-      {current ? (
-        <section className="issue" aria-labelledby="home-issue-title">
-          <div className="section-line">
-            <h2 className="section-label" id="home-issue-title">
-              本期
-            </h2>
-            <span className="section-meta">{formatDate(current.publishedAt)}</span>
-          </div>
-
-          <div className="issue-body">
-            <p className="issue-note">
-              长文的价值不在于快，而在于被反复校对之后仍然成立。这一篇，是最近一次校准的结果。
+          <div className="cover-foot">
+            <h1 className="cover-title reveal" id="home-title" style={delay(80)}>
+              <span className="cover-title-line">把判断写下来</span>
+              <span className="cover-title-line cover-title-second">再反复校准</span>
+            </h1>
+            <p className="cover-kicker reveal" style={delay(160)}>
+              {site.kicker}
             </p>
-            <Link className="issue-link" href={postHref(current.slug)}>
-              <span className="issue-title">{current.title}</span>
-              <span className="issue-foot">
-                <span>{readingLabel(current.readingMinutes)}</span>
-                <span className="issue-more">
-                  阅读本期 <span aria-hidden="true">→</span>
-                </span>
-              </span>
-            </Link>
           </div>
-        </section>
-      ) : null}
-
-      <section className="cover-work" aria-labelledby="home-work-title">
-        <div className="section-line">
-          <h2 className="section-label" id="home-work-title">
-            封面作品
-          </h2>
-          <Link className="all-link" href="/projects">
-            全部作品 <span aria-hidden="true">→</span>
-          </Link>
         </div>
-
-        <Link className="cover-work-link" href={`/projects/${coverWork.slug}`}>
-          <span className="cover-work-visual">
-            <Specimen kind={coverWork.specimen} />
-            <span className="sr-only">查看作品：{coverWork.title}</span>
-          </span>
-          <span className="cover-work-foot">
-            <span className="cover-work-id">
-              {coverWork.index} · {coverWork.category} · {coverWork.year}
-            </span>
-            <span className="cover-work-title">{coverWork.title}</span>
-            <span className="cover-work-note">
-              四件作品里的第一件。界面只负责呈现，边界在下层先行立住。
-            </span>
-            <span className="cover-work-more">
-              查看完整案例 <span aria-hidden="true">→</span>
-            </span>
-          </span>
-        </Link>
-
-        <p className="other-works">
-          <span className="other-works-label">其余作品</span>
-          {otherWorks.map((project) => (
-            <Link key={project.slug} href={`/projects/${project.slug}`}>
-              {project.title}
-            </Link>
-          ))}
-        </p>
       </section>
 
-      {others.length > 0 ? (
-        <p className="other-notes">
-          <span className="other-works-label">此前</span>
-          {others.map((post, index) => (
-            <Link key={post.slug} href={postHref(post.slug)}>
-              {padIndex(index + 1)} {post.title}
+      <section className="wall" aria-labelledby="home-wall-title">
+        <h2 className="sr-only" id="home-wall-title">
+          作品
+        </h2>
+
+        <div className="wall-scale">
+          <span className="wall-scale-index">THE WALL</span>
+          <span>{firstPlate.year}</span>
+        </div>
+
+        <div className="wall-grid">
+          {projects.map((project) => (
+            <Link key={project.slug} className="plate" href={`/projects/${project.slug}`}>
+              <span className="plate-head">
+                <span className="plate-num">{project.index}</span>
+                <span className="plate-latin">{project.latin}</span>
+              </span>
+
+              <div className="plate-frame">
+                <Specimen kind={project.specimen} />
+              </div>
+
+              <h3 className="plate-title">{project.title}</h3>
+              <p className="plate-creed">{project.statement}</p>
+              <p className="plate-spec">
+                {project.category} · {project.stack.join(' / ')}
+              </p>
             </Link>
           ))}
-        </p>
-      ) : null}
+        </div>
+      </section>
 
-      <section className="home-close" aria-label="关于这个站点">
-        <Link className="close-statement" href="/about">
-          <span className="close-line">留下的判断，都要经得起回看</span>
-          <span className="close-more">
-            关于这个站点 <span aria-hidden="true">→</span>
-          </span>
-        </Link>
+      <section className="colophon" aria-label="站点铭牌">
+        <p className="colophon-line">留下的判断，都要经得起回看</p>
+
+        <dl className="colophon-meter">
+          <div>
+            <dt>写作</dt>
+            <dd>{String(posts.length).padStart(2, '0')}</dd>
+          </div>
+          <div>
+            <dt>作品</dt>
+            <dd>{String(projects.length).padStart(2, '0')}</dd>
+          </div>
+          <div>
+            <dt>起算</dt>
+            <dd>{oldest ? formatDate(oldest.publishedAt).slice(0, 7) : '—'}</dd>
+          </div>
+        </dl>
       </section>
     </div>
   );

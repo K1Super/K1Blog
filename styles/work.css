@@ -131,14 +131,6 @@
   border-color: var(--rule-strong);
 }
 
-.exhibit-visual .specimen {
-  transition: transform 700ms var(--ease);
-}
-
-.exhibit:hover .specimen {
-  transform: scale(1.012);
-}
-
 .exhibit-ledger {
   display: flex;
   flex-wrap: wrap;

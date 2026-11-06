@@ -1,15 +1,21 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('public site', () => {
-  test('home renders the editorial cover with one issue and one cover work', async ({ page }) => {
+  test('home renders the cover and the four-plate wall', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/博客/);
     await expect(page.locator('#home-title')).toContainText('把判断写下来');
-    await expect(page.locator('.spotlight-canvas')).toHaveCount(1);
-    await expect(page.locator('.issue-title')).toContainText('精确是一种审美');
-    await expect(page.locator('.cover-work-title')).toHaveText('Verthys');
-    await expect(page.locator('.other-works a')).toHaveCount(3);
-    await expect(page.locator('.other-notes a')).toHaveCount(2);
+    await expect(page.locator('.field-canvas')).toHaveCount(1);
+    await expect(page.locator('.wall-grid .plate')).toHaveCount(4);
+    await expect(page.locator('.plate-title')).toHaveText([
+      'Verthys',
+      'Terra Scout',
+      'AcmeDesk',
+      'Relivus',
+    ]);
+    await expect(page.locator('.plate-creed').first()).toContainText('加密不是一个开关');
+    await expect(page.locator('.plate-frame .specimen')).toHaveCount(4);
+    await expect(page.locator('.colophon-meter dd')).toHaveCount(3);
     await expect(page.locator('.capsule-nav a')).toHaveText(['首页', '随笔', '项目', '关于']);
     await expect(page.locator('.capsule-nav a[aria-current="page"]')).toHaveText(/首页/);
     await expect(page.locator('#lamp .lamp-icon')).toHaveCount(1);
@@ -18,6 +24,17 @@ test.describe('public site', () => {
       () => document.documentElement.scrollWidth - window.innerWidth,
     );
     expect(overflow).toBe(0);
+  });
+
+  test('home carries no module-level navigation of its own', async ({ page }) => {
+    await page.goto('/');
+    const main = page.locator('#main');
+    await expect(main.locator('a[href="/essays"]')).toHaveCount(0);
+    await expect(main.locator('a[href="/projects"]')).toHaveCount(0);
+    await expect(main.locator('a[href="/about"]')).toHaveCount(0);
+    await expect(main.locator('a[href="/search"]')).toHaveCount(0);
+    await expect(main.locator('.plate')).toHaveCount(4);
+    await expect(main.locator('.plate-creed')).toHaveCount(4);
   });
 
   test('home link returns to the homepage from an article', async ({ page }) => {
