@@ -1,46 +1,63 @@
+/*
+ * K1Blog 设计令牌 · 黑与钢蓝
+ * 单一来源：全部颜色、字体、时长、节奏由此处导出
+ */
 :root {
-  --bg: #0c0d0e;
-  --surface: #141517;
-  --surface-2: #1b1c1f;
-  --text: #e9e3d6;
-  --body-text: #cfc8ba;
-  --muted: #a9a397;
-  --faint: #8a857b;
-  --amber: #d49a45;
-  --oxide: #6c8792;
-  --rule: rgba(233, 227, 214, 0.14);
-  --rule-strong: rgba(233, 227, 214, 0.3);
-  --overlay: rgba(0, 0, 0, 0.68);
-  --danger: #c95c45;
-  --success: #86a07e;
+  /* 表面：中性黑阶梯（夜） */
+  --bg: #101012;
+  --surface: #161618;
+  --surface-2: #1f1f22;
+
+  /* 墨色：主、次、弱三级文字角色 */
+  --text: #ededed;
+  --body-text: #b4b4bb;
+  --muted: #a0a0a7;
+  --faint: #86868d;
+
+  /* 唯一强调色：钢蓝 */
+  --accent: #7ba3d6;
+  --rule: rgba(237, 237, 237, 0.12);
+  --rule-strong: rgba(237, 237, 237, 0.3);
+  --overlay: rgba(0, 0, 0, 0.6);
+  --danger: #c0504d;
+  --success: #5d9c6d;
+
+  /* 字体 */
   --font-display: 'Newsreader', 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
   --font-sans:
     'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
   --font-mono:
     'IBM Plex Mono', 'SFMono-Regular', Consolas, 'PingFang SC', 'Microsoft YaHei UI',
     'Microsoft YaHei', 'Noto Sans CJK SC', monospace;
-  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
-  --d1: 120ms;
-  --d2: 240ms;
-  --d3: 400ms;
-  --d4: 600ms;
+
+  /* 动效：单条曲线，短促过渡 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --d1: 140ms;
+  --d2: 220ms;
+  --d3: 360ms;
+  --d4: 520ms;
+
+  /* 节奏与圆角 */
   --gutter: clamp(20px, 3.2vw, 48px);
-  --rail: 88px;
+  --wrap: 1280px;
+  --r-btn: 2px;
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 6px;
 }
 
 [data-theme='lamp'] {
-  --bg: #e9e3d6;
-  --surface: #e2dac9;
-  --surface-2: #dcd3c1;
-  --text: #16181a;
-  --body-text: #2b2a26;
-  --muted: #5f594f;
-  --faint: #6a6155;
-  --amber: #8f5a1a;
-  --oxide: #4f6b78;
-  --rule: rgba(22, 24, 26, 0.14);
-  --rule-strong: rgba(22, 24, 26, 0.3);
-  --overlay: rgba(22, 24, 26, 0.55);
-  --danger: #a84532;
-  --success: #56745a;
+  --bg: #f6f6f7;
+  --surface: #ffffff;
+  --surface-2: #ececee;
+  --text: #151517;
+  --body-text: #3a3a40;
+  --muted: #5d5d64;
+  --faint: #6e6e76;
+  --accent: #3d5f8c;
+  --rule: rgba(21, 21, 23, 0.12);
+  --rule-strong: rgba(21, 21, 23, 0.3);
+  --overlay: rgba(21, 21, 23, 0.4);
+  --danger: #b0433f;
+  --success: #3d7a4c;
 }

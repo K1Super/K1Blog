@@ -13,7 +13,7 @@ export function CaseView({ project, next }: { project: Project; next: Project })
             <span aria-hidden="true">←</span> 返回展览
           </Link>
           <span className="case-ledger">
-            EXHIBIT {project.index} / {project.category} / {project.year}
+            {project.index} / {project.category} / {project.year}
           </span>
         </div>
 
@@ -57,7 +57,7 @@ export function CaseView({ project, next }: { project: Project; next: Project })
 
         <aside className="case-aside" aria-label="项目信息">
           <div>
-            <p className="case-aside-label">STACK</p>
+            <p className="case-aside-label">技术栈</p>
             <ul className="case-stack">
               {project.stack.map((item) => (
                 <li key={item}>{item}</li>
@@ -65,7 +65,7 @@ export function CaseView({ project, next }: { project: Project; next: Project })
             </ul>
           </div>
           <div>
-            <p className="case-aside-label">STATUS</p>
+            <p className="case-aside-label">状态</p>
             <p className="case-aside-value">{project.status}</p>
           </div>
           <CaseLive project={project} />
@@ -82,7 +82,7 @@ export function CaseView({ project, next }: { project: Project; next: Project })
       </section>
 
       <nav className="case-next" aria-label="下一件展品">
-        <span className="case-next-label">NEXT EXHIBIT / {next.index}</span>
+        <span className="case-next-label">下一件 / {next.index}</span>
         <Link className="case-next-link" href={`/projects/${next.slug}`}>
           <span>{next.title}</span>
           <span>{next.latin}</span>

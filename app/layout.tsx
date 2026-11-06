@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-import { Grain } from '@/components/layout/grain';
 import { site } from '@/lib/site';
 import './globals.css';
 
@@ -43,11 +42,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" data-theme="night" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="zh-CN" data-theme="night" suppressHydrationWarning>
       <body id="top">
         <link
           rel="preload"
           href="/fonts/noto-serif-display.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          href="/fonts/newsreader.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          href="/fonts/newsreader-italic.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
@@ -61,7 +76,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skip" href="#main">
           跳到正文
         </a>
-        <Grain />
         {children}
       </body>
     </html>

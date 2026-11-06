@@ -107,7 +107,7 @@ export function SearchClient() {
     <>
       <form className="search-form" onSubmit={(event) => event.preventDefault()}>
         <div className="field search-field">
-          <label htmlFor="search-input">关键词 / SEARCH</label>
+          <label htmlFor="search-input">关键词</label>
           <input
             id="search-input"
             className="search-input"

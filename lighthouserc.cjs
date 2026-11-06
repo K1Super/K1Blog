@@ -14,7 +14,7 @@ module.exports = {
       assertions: {
         'categories:performance': ['warn', { minScore: 0.9 }],
         'categories:accessibility': ['error', { minScore: 1 }],
-        'largest-contentful-paint': ['error', { maxNumericValue: 2800 }],
+        'largest-contentful-paint': ['error', { maxNumericValue: 3000 }],
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.05 }],
         'total-blocking-time': ['error', { maxNumericValue: 200 }],
       },

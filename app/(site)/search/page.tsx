@@ -12,7 +12,7 @@ export default function SearchPage() {
   return (
     <section className="search-page">
       <header className="search-head">
-        <p className="eyebrow">SEARCH</p>
+        <p className="eyebrow">站内检索</p>
         <h1 className="search-title">搜索</h1>
       </header>
       <SearchClient />

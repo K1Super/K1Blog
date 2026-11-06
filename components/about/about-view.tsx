@@ -15,8 +15,8 @@ export function AboutView({
     <section className="about-page">
       <header className="about-head">
         <div className="about-top">
-          <p className="eyebrow">ABOUT / COLOPHON</p>
-          <span className="about-stamp">SELF-HOSTED / 2026</span>
+          <p className="eyebrow">关于 · 本站</p>
+          <span className="about-stamp">自托管 · 2026</span>
         </div>
         <h1 className="sr-only" id="about-title">
           关于
@@ -29,7 +29,7 @@ export function AboutView({
           <section className="about-section">
             <div className="about-section-head">
               <span className="about-section-num">01</span>
-              <span>THE SITE / 这个站点</span>
+              <span>这个站点</span>
             </div>
             <h2 className="about-section-title">把内容放进自己的容器</h2>
             <div className="about-section-body">
@@ -46,7 +46,7 @@ export function AboutView({
           <section className="about-section">
             <div className="about-section-head">
               <span className="about-section-num">02</span>
-              <span>WRITING / 写作</span>
+              <span>写作</span>
             </div>
             <h2 className="about-section-title">把判断写下来，再回来校准</h2>
             <div className="about-section-body">
@@ -62,7 +62,7 @@ export function AboutView({
           <section className="about-section">
             <div className="about-section-head">
               <span className="about-section-num">03</span>
-              <span>WORKS / 作品</span>
+              <span>作品</span>
             </div>
             <h2 className="about-section-title">四件可以被审阅的作品</h2>
             <div className="about-section-body">
@@ -80,7 +80,7 @@ export function AboutView({
           <section className="about-section">
             <div className="about-section-head">
               <span className="about-section-num">04</span>
-              <span>BOUNDARIES / 边界</span>
+              <span>边界</span>
             </div>
             <h2 className="about-section-title">不采集，也不打扰</h2>
             <div className="about-section-body">
@@ -94,31 +94,31 @@ export function AboutView({
           </section>
 
           <footer className="about-foot">
-            <span>LAST NOTE / {updated}</span>
+            <span>最近笔记 {updated}</span>
           </footer>
         </div>
 
         <aside className="about-facts" aria-label="站点信息与留言">
-          <span className="about-facts-label">COLOPHON / 2026</span>
+          <span className="about-facts-label">本站信息</span>
           <div className="about-fact">
-            <span>WORKS</span>
+            <span>作品</span>
             <span>{worksCount}</span>
           </div>
           <div className="about-fact">
-            <span>NOTES</span>
+            <span>随笔</span>
             <span>{notesCount}</span>
           </div>
           <div className="about-fact">
-            <span>THEMES</span>
-            <span>02</span>
+            <span>主题</span>
+            <span>2</span>
           </div>
           <div className="about-fact">
-            <span>BASE</span>
-            <span>SELF-HOSTED</span>
+            <span>形态</span>
+            <span>自托管</span>
           </div>
           <div className="about-fact">
-            <span>STACK</span>
-            <span>NEXT.JS / SQLITE</span>
+            <span>栈</span>
+            <span>Next.js · SQLite</span>
           </div>
           <div className="about-messages">
             <MessageSection targetSlug="about" />

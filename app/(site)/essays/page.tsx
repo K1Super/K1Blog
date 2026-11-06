@@ -20,20 +20,20 @@ export default function EssaysPage() {
     <section className="notes-page">
       <header className="notes-head">
         <div>
-          <p className="eyebrow">WRITING / NOTES</p>
+          <p className="eyebrow">随笔</p>
           <h1 className="sr-only" id="notes-title">
             随笔
           </h1>
           <p className="notes-statement">写下判断，放一夜，再校准。</p>
         </div>
         <div className="notes-meta">
-          <span>{count} NOTES</span>
-          <span>LATEST / {latest ? formatDate(latest.publishedAt) : '—'}</span>
+          <span>{count} 篇</span>
+          <span>最近 {latest ? formatDate(latest.publishedAt) : '—'}</span>
         </div>
       </header>
 
       <div className="notes-index">
-        <span>ARCHIVE / {year}</span>
+        <span>{year}</span>
         <span>按发布时间倒序</span>
       </div>
 

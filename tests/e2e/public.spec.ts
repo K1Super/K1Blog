@@ -1,14 +1,15 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('public site', () => {
-  test('home renders a full-screen showcase without article listings', async ({ page }) => {
+  test('home renders the editorial cover with one issue and one cover work', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/博客/);
-    await expect(page.locator('#hero-title')).toHaveText('博客');
-    await expect(page.locator('.title')).toHaveCount(0);
-    await expect(page.locator('.field-canvas')).toHaveCount(1);
-    await expect(page.locator('.entries')).toHaveCount(0);
-    await expect(page.locator('.hero-links')).toHaveCount(0);
+    await expect(page.locator('#home-title')).toContainText('把判断写下来');
+    await expect(page.locator('.spotlight-canvas')).toHaveCount(1);
+    await expect(page.locator('.issue-title')).toContainText('精确是一种审美');
+    await expect(page.locator('.cover-work-title')).toHaveText('Verthys');
+    await expect(page.locator('.other-works a')).toHaveCount(3);
+    await expect(page.locator('.other-notes a')).toHaveCount(2);
     await expect(page.locator('.capsule-nav a')).toHaveText(['首页', '随笔', '项目', '关于']);
     await expect(page.locator('.capsule-nav a[aria-current="page"]')).toHaveText(/首页/);
     await expect(page.locator('#lamp .lamp-icon')).toHaveCount(1);
@@ -23,7 +24,7 @@ test.describe('public site', () => {
     await page.goto('/posts/precision-as-aesthetic');
     await page.locator('.capsule-nav a', { hasText: '首页' }).click();
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.locator('#hero-title')).toHaveText('博客');
+    await expect(page.locator('#home-title')).toContainText('把判断写下来');
   });
 
   test('article renders content and table of contents', async ({ page }) => {
@@ -46,7 +47,7 @@ test.describe('public site', () => {
     await expect(page.locator('#work-title')).toHaveText('作品');
     await expect(page.locator('.exhibit')).toHaveCount(4);
     await expect(page.locator('.exhibit-visual')).toHaveCount(4);
-    await expect(page.locator('.work-dock a')).toHaveCount(4);
+    await expect(page.locator('.work-index a')).toHaveCount(4);
     await expect(page.locator('.capsule-nav a[aria-current="page"]')).toHaveText(/项目/);
     await page.goto(`/tags/${encodeURIComponent('观测')}`);
     await expect(page.locator('.listing-title')).toContainText('观测');

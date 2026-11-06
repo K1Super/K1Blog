@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 
 import { ExhibitEntry } from '@/components/work/exhibit-entry';
-import { WorkDock } from '@/components/work/work-dock';
 import { projects } from '@/lib/projects';
 
 export const metadata: Metadata = {
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
-  const total = String(projects.length).padStart(3, '0');
+  const total = String(projects.length).padStart(2, '0');
   const year = projects[0].year;
 
   return (
@@ -21,13 +20,22 @@ export default function ProjectsPage() {
           作品
         </h1>
         <div className="work-hero-top">
-          <p className="eyebrow">SELECTED WORKS</p>
+          <p className="eyebrow">作品</p>
           <span className="work-hero-count">
-            {total} EXHIBITS / {year}
+            {total} 件 / {year}
           </span>
         </div>
 
-        <WorkDock items={projects.map(({ index, title }) => ({ index, title }))} />
+        <nav className="work-index" aria-label="作品索引">
+          {projects.map((project) => (
+            <div className="work-index-item" key={project.index}>
+              <a className="work-index-link" href={`#exhibit-${project.index}`}>
+                <span className="work-index-num">{project.index}</span>
+                <span className="work-index-title">{project.title}</span>
+              </a>
+            </div>
+          ))}
+        </nav>
       </header>
 
       <div className="work-list">

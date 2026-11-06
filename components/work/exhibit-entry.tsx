@@ -30,15 +30,15 @@ export function ExhibitEntry({ project, position }: { project: Project; position
 
         <ul className="exhibit-facts">
           <li>
-            <span>ROLE</span>
+            <span>角色</span>
             <span>{project.role}</span>
           </li>
           <li>
-            <span>STACK</span>
+            <span>技术栈</span>
             <span>{project.stack.join(' / ')}</span>
           </li>
           <li>
-            <span>STATUS</span>
+            <span>状态</span>
             <span>{project.status}</span>
           </li>
         </ul>

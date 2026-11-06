@@ -23,14 +23,14 @@ export function ArticleView({
   return (
     <article className="article">
       <header className="article-head">
-        <p className="eyebrow">ARTICLE / {year}</p>
+        <p className="eyebrow">随笔 · {year}</p>
         <span className="article-num">{padIndex(number)}</span>
         <h1 className="article-title">{post.title}</h1>
         <p className="article-description">{post.description}</p>
         <div className="article-meta">
-          <span>PUBLISHED / {formatDateFull(post.publishedAt)}</span>
-          {post.updatedAt ? <span>UPDATED / {formatDateFull(post.updatedAt)}</span> : null}
-          <span>READ / {readingLabel(post.readingMinutes)}</span>
+          <span>发布于 {formatDateFull(post.publishedAt)}</span>
+          {post.updatedAt ? <span>更新于 {formatDateFull(post.updatedAt)}</span> : null}
+          <span>阅读 {readingLabel(post.readingMinutes)}</span>
         </div>
       </header>
 
@@ -53,7 +53,7 @@ export function ArticleView({
 
       {related.length > 0 ? (
         <section className="related" aria-label="相关文章">
-          <p className="related-title">RELATED / 相关文章</p>
+          <p className="related-title">相关文章</p>
           <ol className="entries">
             {related.map((item, index) => (
               <PostRow key={item.slug} post={item} index={index} />
@@ -63,7 +63,7 @@ export function ArticleView({
       ) : null}
 
       <p className="muted" style={{ marginTop: '48px' }}>
-        LAST UPDATED / {formatDate(post.updatedAt ?? post.publishedAt)}
+        最近更新 {formatDate(post.updatedAt ?? post.publishedAt)}
       </p>
     </article>
   );

@@ -41,11 +41,11 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
     <section className="listing">
       <header className="listing-head">
         <div>
-          <p className="eyebrow">TOPIC / TAG</p>
+          <p className="eyebrow">标签</p>
           <h1 className="listing-title"># {label}</h1>
         </div>
         <div className="listing-count">
-          {String(posts.length).padStart(3, '0')} NOTES
+          {posts.length} 篇
           <br />
           按时间倒序
         </div>

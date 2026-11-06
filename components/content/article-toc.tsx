@@ -8,7 +8,7 @@ export function ArticleToc({ headings }: { headings: Heading[] }) {
   return (
     <aside className="article-aside" aria-label="文章目录">
       <nav className="toc">
-        <p className="toc-title">CONTENTS</p>
+        <p className="toc-title">目录</p>
         <ol className="toc-list">
           {headings.map((heading, index) => (
             <li key={heading.id}>
